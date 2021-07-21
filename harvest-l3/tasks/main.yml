@@ -1,0 +1,29 @@
+---
+# tasks file for harvest-l3
+tasks:
+
+  - name: all nxos switches
+    nxos_facts:
+      gather_subset: min
+      gather_network_resources: l3_interfaces
+    when: ansible_network_os == "nxos"
+
+  - name: all ios routers and switches
+    ios_facts:
+      gather_subset: min
+      gather_network_resources: l3_interfaces
+    when: ansible_network_os == "ios"
+
+  - name: all arista switches
+    eos_facts:
+      gather_subset: min
+      gather_network_resources: l3_interfaces
+    when: ansible_network_os == "eos"
+
+  - name: save output to file
+    lineinfile:
+      path: ./outputfile.py
+        line: "{{ inventory_hostname }} = {{ ansible_network_resources | to_nice_json }}"
+      insertafter: EOF
+      create: yes
+    
